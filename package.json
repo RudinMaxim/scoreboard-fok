@@ -1,0 +1,26 @@
+{
+  "name": "scoreboard-fok",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "npm@11.6.2",
+  "engines": {
+    "node": ">=24.12.0",
+    "npm": ">=11.6.2"
+  },
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "nx": "node tools/run-nx.mjs",
+    "graph": "node tools/run-nx.mjs graph",
+    "show:projects": "node tools/run-nx.mjs show projects",
+    "build": "node tools/run-nx.mjs run-many -t build",
+    "test": "node tools/run-nx.mjs run-many -t test",
+    "lint": "node tools/run-nx.mjs run-many -t lint",
+    "nx:reset": "node tools/run-nx.mjs reset"
+  },
+  "devDependencies": {
+    "nx": "latest",
+    "typescript": "latest"
+  }
+}

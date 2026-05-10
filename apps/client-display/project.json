@@ -1,0 +1,22 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "client-display",
+  "projectType": "application",
+  "root": "apps/client-display",
+  "sourceRoot": "apps/client-display/src",
+  "targets": {
+    "build": {
+      "command": "node tools/nx-placeholder.mjs client-display build"
+    },
+    "lint": {
+      "command": "node tools/nx-placeholder.mjs client-display lint"
+    },
+    "test": {
+      "command": "node tools/nx-placeholder.mjs client-display test"
+    }
+  },
+  "tags": [
+    "scope:display",
+    "type:app"
+  ]
+}
