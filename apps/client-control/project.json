@@ -1,0 +1,22 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "client-control",
+  "projectType": "application",
+  "root": "apps/client-control",
+  "sourceRoot": "apps/client-control/src",
+  "targets": {
+    "build": {
+      "command": "node tools/nx-placeholder.mjs client-control build"
+    },
+    "lint": {
+      "command": "node tools/nx-placeholder.mjs client-control lint"
+    },
+    "test": {
+      "command": "node tools/nx-placeholder.mjs client-control test"
+    }
+  },
+  "tags": [
+    "scope:control",
+    "type:app"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "server",
+  "projectType": "application",
+  "root": "apps/server",
+  "sourceRoot": "apps/server/src",
+  "targets": {
+    "build": {
+      "command": "node tools/nx-placeholder.mjs server build"
+    },
+    "lint": {
+      "command": "node tools/nx-placeholder.mjs server lint"
+    },
+    "test": {
+      "command": "node tools/nx-placeholder.mjs server test"
+    }
+  },
+  "tags": [
+    "scope:server",
+    "type:app"
+  ]
+}

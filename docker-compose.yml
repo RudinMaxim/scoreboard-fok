@@ -1,0 +1,60 @@
+name: scoreboard-fok-local
+
+services:
+  server:
+    image: scoreboard-fok/server:${APP_VERSION:-local}
+    build:
+      context: .
+      dockerfile: apps/server/Dockerfile
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      DATABASE_URL: ${DATABASE_URL:-file:/data/scoreboard.db}
+      TZ: ${TZ:-Asia/Yekaterinburg}
+    ports:
+      - "${SERVER_PORT:-3000}:3000"
+    volumes:
+      - scoreboard-local-data:/data
+    restart: unless-stopped
+    networks:
+      - scoreboard-local
+
+  client-control:
+    image: scoreboard-fok/client-control:${APP_VERSION:-local}
+    build:
+      context: .
+      dockerfile: apps/client-control/Dockerfile
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      SERVER_URL: http://server:3000
+      TZ: ${TZ:-Asia/Yekaterinburg}
+    ports:
+      - "${CLIENT_CONTROL_PORT:-3001}:3000"
+    depends_on:
+      - server
+    restart: unless-stopped
+    networks:
+      - scoreboard-local
+
+  client-display:
+    image: scoreboard-fok/client-display:${APP_VERSION:-local}
+    build:
+      context: .
+      dockerfile: apps/client-display/Dockerfile
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      SERVER_URL: http://server:3000
+      TZ: ${TZ:-Asia/Yekaterinburg}
+    ports:
+      - "${CLIENT_DISPLAY_PORT:-3002}:3000"
+    depends_on:
+      - server
+    restart: unless-stopped
+    networks:
+      - scoreboard-local
+
+networks:
+  scoreboard-local:
+    driver: bridge
+
+volumes:
+  scoreboard-local-data:

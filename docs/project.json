@@ -1,0 +1,15 @@
+{
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "name": "docs",
+  "projectType": "library",
+  "root": "docs",
+  "targets": {
+    "lint": {
+      "command": "node tools/nx-placeholder.mjs docs lint"
+    }
+  },
+  "tags": [
+    "scope:docs",
+    "type:documentation"
+  ]
+}
