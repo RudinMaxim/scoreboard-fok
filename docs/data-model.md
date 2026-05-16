@@ -9,13 +9,13 @@
 - Восстановление активного матча из СУБД менее чем за 5 секунд.
 - Append-only журнал событий матча с системным `timestamp` и игровым временем.
 
-ERD-файл: [diagrams/data-model-erd.mmd](diagrams/data-model-erd.mmd).
+Полная ERD-диаграмма хранится в этом документе, чтобы модель данных имела один источник правды.
 
 ```mermaid
-%% Обзор связей. Полная диаграмма с полями находится в docs/diagrams/data-model-erd.mmd.
 erDiagram
     TOURNAMENT ||--o{ GAME_DAY : "contains"
     VENUE ||--o{ GAME_DAY : "hosts"
+    VENUE ||--o{ MATCH : "match venue"
     GAME_DAY ||--o{ MATCH : "groups"
     SCOREBOARD_LAYOUT ||--o{ MATCH : "uses"
 
@@ -40,6 +40,239 @@ erDiagram
     MATCH_PERIOD ||--o{ MATCH_EVENT : "event period"
     MATCH_TEAM ||--o{ MATCH_EVENT : "event team"
     MATCH_ROSTER ||--o{ MATCH_EVENT : "event participant"
+
+    MATCH_EVENT ||--o| SCORE_EVENT : "score details"
+    MATCH_EVENT ||--o| FOUL_EVENT : "foul details"
+    MATCH_EVENT ||--o| TIMEOUT_EVENT : "timeout details"
+    MATCH_TIMEOUT_BUCKET ||--o{ TIMEOUT_EVENT : "timeout bucket"
+    MATCH_EVENT ||--o| CLOCK_EVENT : "clock details"
+    MATCH_EVENT ||--o| POSSESSION_EVENT : "possession details"
+    MATCH_EVENT ||--o| SCORE_CORRECTION_EVENT : "correction details"
+
+    TOURNAMENT {
+        uuid id PK
+        string name
+        date starts_on
+        date ends_on
+        datetime created_at
+        datetime updated_at
+    }
+
+    VENUE {
+        uuid id PK
+        string name
+        string city
+        string address
+        datetime created_at
+        datetime updated_at
+    }
+
+    TEAM {
+        uuid id PK
+        string name
+        string city
+        string logo_uri
+        datetime created_at
+        datetime updated_at
+    }
+
+    PLAYER {
+        uuid id PK
+        string last_name
+        string first_name
+        string patronymic
+        string photo_uri
+        datetime created_at
+        datetime updated_at
+    }
+
+    TEAM_MEMBERSHIP {
+        uuid id PK
+        uuid team_id FK
+        uuid player_id FK
+        int jersey_number
+        date active_from
+        date active_to
+        datetime created_at
+    }
+
+    GAME_DAY {
+        uuid id PK
+        uuid tournament_id FK
+        uuid venue_id FK
+        date game_date
+        string title
+        string status
+        datetime created_at
+        datetime updated_at
+    }
+
+    SCOREBOARD_LAYOUT {
+        uuid id PK
+        string name
+        string layout_preset
+        json config
+        boolean is_default
+        datetime created_at
+        datetime updated_at
+    }
+
+    MATCH {
+        uuid id PK
+        uuid game_day_id FK
+        uuid venue_id FK
+        uuid scoreboard_layout_id FK
+        datetime scheduled_at
+        string timezone
+        int quarter_duration_seconds
+        string status
+        datetime created_at
+        datetime updated_at
+    }
+
+    MATCH_TEAM {
+        uuid id PK
+        uuid match_id FK
+        uuid team_id FK
+        string side
+        string display_name
+        string logo_uri
+        string primary_color
+        string secondary_color
+        datetime created_at
+    }
+
+    MATCH_PERIOD {
+        uuid id PK
+        uuid match_id FK
+        int sequence_index
+        int period_number
+        string period_type
+        int duration_seconds
+        string status
+        datetime started_at
+        datetime ended_at
+    }
+
+    MATCH_CLOCK_STATE {
+        uuid match_id PK
+        uuid active_period_id FK
+        uuid possession_match_team_id FK
+        int game_clock_ms
+        int shot_clock_ms
+        boolean game_clock_running
+        boolean shot_clock_running
+        string display_mode
+        datetime saved_at
+    }
+
+    MATCH_TEAM_STATE {
+        uuid match_team_id PK
+        int total_score
+        int current_period_fouls
+        boolean penalty_active
+        datetime updated_at
+    }
+
+    MATCH_TIMEOUT_BUCKET {
+        uuid id PK
+        uuid match_team_id FK
+        string bucket_type
+        int used_count
+        int limit_count
+        datetime updated_at
+    }
+
+    MATCH_ROSTER {
+        uuid id PK
+        uuid match_team_id FK
+        uuid player_id FK
+        int jersey_number
+        string display_name
+        string role
+        boolean starter
+        datetime created_at
+    }
+
+    MATCH_PLAYER_STAT {
+        uuid match_roster_id PK
+        int points
+        int personal_fouls
+        boolean fouled_out
+        datetime updated_at
+    }
+
+    MATCH_PERIOD_SCORE {
+        uuid id PK
+        uuid match_period_id FK
+        uuid match_team_id FK
+        int points
+        datetime updated_at
+    }
+
+    MATCH_EVENT {
+        uuid id PK
+        uuid match_id FK
+        uuid match_period_id FK
+        uuid match_team_id FK
+        uuid match_roster_id FK
+        string event_type
+        int game_clock_ms
+        int shot_clock_ms
+        string source
+        string operator_role
+        string reason
+        datetime occurred_at
+        datetime created_at
+        uuid reverted_event_id FK
+    }
+
+    SCORE_EVENT {
+        uuid match_event_id PK
+        int points_delta
+        int team_score_after
+        int player_points_after
+        string scoring_kind
+    }
+
+    FOUL_EVENT {
+        uuid match_event_id PK
+        int foul_delta
+        string foul_type
+        int player_fouls_after
+        int team_fouls_period_after
+        boolean personal_fifth_foul
+        boolean team_penalty_after
+    }
+
+    TIMEOUT_EVENT {
+        uuid match_event_id PK
+        uuid timeout_bucket_id FK
+        int duration_seconds
+        int used_count_after
+        boolean limit_warning
+    }
+
+    CLOCK_EVENT {
+        uuid match_event_id PK
+        string clock_kind
+        string action
+        int value_before_ms
+        int value_after_ms
+        int adjustment_ms
+    }
+
+    POSSESSION_EVENT {
+        uuid match_event_id PK
+        uuid possession_before_match_team_id FK
+        uuid possession_after_match_team_id FK
+    }
+
+    SCORE_CORRECTION_EVENT {
+        uuid match_event_id PK
+        int score_before
+        int score_after
+    }
 ```
 
 ## Проектные решения
@@ -56,7 +289,7 @@ erDiagram
 
 ## Справочники
 
-`VENUE` хранит площадки. `GAME_DAY` ссылается на площадку по FK, а матчи получают площадку через игровой день.
+`VENUE` хранит площадки. `GAME_DAY` хранит площадку по умолчанию для расписания дня, а `MATCH.venue_id` хранит фактическую площадку матча. Это позволяет перенести один матч на другую площадку без создания нового игрового дня и без дублирования строкового `venue`.
 
 `TOURNAMENT` является опциональной надстройкой над игровыми днями. Для одиночной инсталляции можно создавать игровой день без турнира.
 
@@ -84,6 +317,7 @@ erDiagram
 `MATCH` хранит только свойства самого матча:
 
 - игровой день;
+- площадку;
 - профиль табло;
 - плановое время начала;
 - часовой пояс;
@@ -91,8 +325,6 @@ erDiagram
 - статус.
 
 Команды матча лежат в `MATCH_TEAM`. Для обычного баскетбола у матча две строки `MATCH_TEAM`: сторона `A` и сторона `B`. Такой вариант не блокирует будущие сценарии, где нужны снимки названия/логотипа/цветов команды на момент матча или отдельные настройки отображения стороны.
-
-Площадка матча определяется через `GAME_DAY.venue_id`. Отдельный `venue_id` в `MATCH` не хранится, чтобы не создавать транзитивную зависимость и рассинхронизацию между матчем и игровым днём.
 
 `MATCH_ROSTER` фиксирует состав конкретной стороны матча. Он ссылается на `MATCH_TEAM` и `PLAYER`, хранит игровой номер и отображаемое имя на этот матч. Исторический матч не меняется после перехода игрока в другую команду.
 
