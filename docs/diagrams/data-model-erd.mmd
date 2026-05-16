@@ -1,31 +1,58 @@
 erDiagram
-    TEAM ||--o{ PLAYER : "current roster"
-    TEAM ||--o{ TEAM_MEMBERSHIP : "membership history"
-    PLAYER ||--o{ TEAM_MEMBERSHIP : "team periods"
-
+    TOURNAMENT ||--o{ GAME_DAY : "contains"
+    VENUE ||--o{ GAME_DAY : "hosts"
     GAME_DAY ||--o{ MATCH : "groups"
     SCOREBOARD_LAYOUT ||--o{ MATCH : "uses"
 
-    TEAM ||--o{ MATCH : "team A"
-    TEAM ||--o{ MATCH : "team B"
-    MATCH ||--|| MATCH_STATE : "current snapshot"
-    MATCH ||--o{ MATCH_PERIOD_SCORE : "period totals"
-    MATCH ||--o{ MATCH_ROSTER : "fixed roster"
-    TEAM ||--o{ MATCH_ROSTER : "roster side"
+    TEAM ||--o{ TEAM_MEMBERSHIP : "membership history"
+    PLAYER ||--o{ TEAM_MEMBERSHIP : "team periods"
+
+    MATCH ||--o{ MATCH_TEAM : "participants"
+    TEAM ||--o{ MATCH_TEAM : "team snapshot"
+    MATCH ||--o{ MATCH_PERIOD : "periods"
+    MATCH ||--|| MATCH_CLOCK_STATE : "clock snapshot"
+    MATCH_PERIOD ||--o| MATCH_CLOCK_STATE : "active period"
+    MATCH_TEAM ||--o| MATCH_CLOCK_STATE : "possession"
+
+    MATCH_TEAM ||--|| MATCH_TEAM_STATE : "current team state"
+    MATCH_TEAM ||--o{ MATCH_TIMEOUT_BUCKET : "timeouts"
+    MATCH_TEAM ||--o{ MATCH_ROSTER : "roster"
     PLAYER ||--o{ MATCH_ROSTER : "participant"
     MATCH_ROSTER ||--|| MATCH_PLAYER_STAT : "player totals"
 
+    MATCH_PERIOD ||--o{ MATCH_PERIOD_SCORE : "period score"
+    MATCH_TEAM ||--o{ MATCH_PERIOD_SCORE : "period score"
+
     MATCH ||--o{ MATCH_EVENT : "append-only log"
-    TEAM ||--o{ MATCH_EVENT : "event team"
-    PLAYER ||--o{ MATCH_EVENT : "event player"
+    MATCH_PERIOD ||--o{ MATCH_EVENT : "event period"
+    MATCH_TEAM ||--o{ MATCH_EVENT : "event team"
     MATCH_ROSTER ||--o{ MATCH_EVENT : "event participant"
 
     MATCH_EVENT ||--o| SCORE_EVENT : "score details"
     MATCH_EVENT ||--o| FOUL_EVENT : "foul details"
     MATCH_EVENT ||--o| TIMEOUT_EVENT : "timeout details"
+    MATCH_TIMEOUT_BUCKET ||--o{ TIMEOUT_EVENT : "timeout bucket"
     MATCH_EVENT ||--o| CLOCK_EVENT : "clock details"
     MATCH_EVENT ||--o| POSSESSION_EVENT : "possession details"
     MATCH_EVENT ||--o| SCORE_CORRECTION_EVENT : "correction details"
+
+    TOURNAMENT {
+        uuid id PK
+        string name
+        date starts_on
+        date ends_on
+        datetime created_at
+        datetime updated_at
+    }
+
+    VENUE {
+        uuid id PK
+        string name
+        string city
+        string address
+        datetime created_at
+        datetime updated_at
+    }
 
     TEAM {
         uuid id PK
@@ -38,12 +65,10 @@ erDiagram
 
     PLAYER {
         uuid id PK
-        uuid current_team_id FK
         string last_name
         string first_name
         string patronymic
         string photo_uri
-        int jersey_number
         datetime created_at
         datetime updated_at
     }
@@ -60,8 +85,9 @@ erDiagram
 
     GAME_DAY {
         uuid id PK
+        uuid tournament_id FK
+        uuid venue_id FK
         date game_date
-        string venue
         string title
         string status
         datetime created_at
@@ -81,79 +107,102 @@ erDiagram
     MATCH {
         uuid id PK
         uuid game_day_id FK
-        uuid team_a_id FK
-        uuid team_b_id FK
         uuid scoreboard_layout_id FK
         datetime scheduled_at
         string timezone
-        string venue
         int quarter_duration_seconds
         string status
         datetime created_at
         datetime updated_at
     }
 
-    MATCH_ROSTER {
+    MATCH_TEAM {
         uuid id PK
         uuid match_id FK
         uuid team_id FK
-        uuid player_id FK
         string side
-        int jersey_number
-        string role
+        string display_name
+        string logo_uri
+        string primary_color
+        string secondary_color
         datetime created_at
     }
 
-    MATCH_STATE {
-        uuid match_id PK,FK
+    MATCH_PERIOD {
+        uuid id PK
+        uuid match_id FK
+        int sequence_index
         int period_number
         string period_type
+        int duration_seconds
+        string status
+        datetime started_at
+        datetime ended_at
+    }
+
+    MATCH_CLOCK_STATE {
+        uuid match_id PK FK
+        uuid active_period_id FK
+        uuid possession_match_team_id FK
         int game_clock_ms
         int shot_clock_ms
         boolean game_clock_running
         boolean shot_clock_running
-        int team_a_score
-        int team_b_score
-        int team_a_fouls_period
-        int team_b_fouls_period
-        int team_a_timeouts_first_half
-        int team_b_timeouts_first_half
-        int team_a_timeouts_second_half
-        int team_b_timeouts_second_half
-        int team_a_timeouts_overtime
-        int team_b_timeouts_overtime
-        string possession_side
         string display_mode
         datetime saved_at
     }
 
-    MATCH_PERIOD_SCORE {
-        uuid id PK
-        uuid match_id FK
-        uuid team_id FK
-        int period_number
-        string period_type
-        int points
+    MATCH_TEAM_STATE {
+        uuid match_team_id PK FK
+        int total_score
+        int current_period_fouls
+        boolean penalty_active
         datetime updated_at
     }
 
+    MATCH_TIMEOUT_BUCKET {
+        uuid id PK
+        uuid match_team_id FK
+        string bucket_type
+        int used_count
+        int limit_count
+        datetime updated_at
+    }
+
+    MATCH_ROSTER {
+        uuid id PK
+        uuid match_team_id FK
+        uuid player_id FK
+        int jersey_number
+        string display_name
+        string role
+        boolean starter
+        datetime created_at
+    }
+
     MATCH_PLAYER_STAT {
-        uuid match_roster_id PK,FK
+        uuid match_roster_id PK FK
         int points
         int personal_fouls
         boolean fouled_out
         datetime updated_at
     }
 
+    MATCH_PERIOD_SCORE {
+        uuid id PK
+        uuid match_period_id FK
+        uuid match_team_id FK
+        int points
+        datetime updated_at
+    }
+
     MATCH_EVENT {
         uuid id PK
         uuid match_id FK
-        uuid team_id FK
-        uuid player_id FK
+        uuid match_period_id FK
+        uuid match_team_id FK
         uuid match_roster_id FK
         string event_type
-        int period_number
-        string period_type
         int game_clock_ms
         int shot_clock_ms
         string source
@@ -165,7 +214,7 @@ erDiagram
     }
 
     SCORE_EVENT {
-        uuid match_event_id PK,FK
+        uuid match_event_id PK FK
         int points_delta
         int team_score_after
         int player_points_after
@@ -173,7 +222,7 @@ erDiagram
     }
 
     FOUL_EVENT {
-        uuid match_event_id PK,FK
+        uuid match_event_id PK FK
         int foul_delta
         string foul_type
         int player_fouls_after
@@ -183,16 +232,15 @@ erDiagram
     }
 
     TIMEOUT_EVENT {
-        uuid match_event_id PK,FK
-        string timeout_scope
+        uuid match_event_id PK FK
+        uuid timeout_bucket_id FK
         int duration_seconds
-        int team_timeouts_period_after
-        int team_timeouts_half_after
+        int used_count_after
         boolean limit_warning
     }
 
     CLOCK_EVENT {
-        uuid match_event_id PK,FK
+        uuid match_event_id PK FK
         string clock_kind
         string action
         int value_before_ms
@@ -201,15 +249,13 @@ erDiagram
     }
 
     POSSESSION_EVENT {
-        uuid match_event_id PK,FK
-        string possession_before
-        string possession_after
+        uuid match_event_id PK FK
+        uuid possession_before_match_team_id FK
+        uuid possession_after_match_team_id FK
     }
 
     SCORE_CORRECTION_EVENT {
-        uuid match_event_id PK,FK
-        int team_a_score_before
-        int team_b_score_before
-        int team_a_score_after
-        int team_b_score_after
+        uuid match_event_id PK FK
+        int score_before
+        int score_after
     }
