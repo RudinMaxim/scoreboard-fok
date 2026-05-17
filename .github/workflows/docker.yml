@@ -5,10 +5,19 @@ on:
     branches:
       - develop
       - main
-  pull_request:
-    branches:
-      - develop
-      - main
+    paths:
+      - "apps/**"
+      - "packages/**"
+      - "Dockerfile"
+      - "docker-compose.yml"
+      - "docker-compose.*.yml"
+      - "package.json"
+      - "package-lock.json"
+      - "nx.json"
+      - "tsconfig*.json"
+      - ".github/workflows/docker.yml"
+
+  workflow_dispatch:
 
 permissions:
   contents: read
