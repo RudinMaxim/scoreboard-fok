@@ -1,5 +1,5 @@
 {
-  "name": "@scoreboard-fok/client-control",
+  "name": "@scoreboard-fok/client",
   "version": "0.1.0",
   "private": true,
   "type": "module"

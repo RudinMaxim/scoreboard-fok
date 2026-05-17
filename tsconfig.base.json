@@ -13,11 +13,14 @@
       "@scoreboard-fok/server/*": [
         "apps/server/src/*"
       ],
-      "@scoreboard-fok/client-display/*": [
-        "apps/client-display/src/*"
+      "@scoreboard-fok/client/*": [
+        "apps/client/src/*"
       ],
-      "@scoreboard-fok/client-control/*": [
-        "apps/client-control/src/*"
+      "@scoreboard-fok/domain/*": [
+        "libs/domain/src/*"
+      ],
+      "@scoreboard-fok/contracts/*": [
+        "libs/contracts/src/*"
       ]
     }
   }

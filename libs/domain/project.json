@@ -1,0 +1,22 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "domain",
+  "projectType": "library",
+  "root": "libs/domain",
+  "sourceRoot": "libs/domain/src",
+  "targets": {
+    "build": {
+      "command": "node tools/nx-placeholder.mjs domain build"
+    },
+    "lint": {
+      "command": "node tools/nx-placeholder.mjs domain lint"
+    },
+    "test": {
+      "command": "node tools/nx-placeholder.mjs domain test"
+    }
+  },
+  "tags": [
+    "scope:domain",
+    "type:library"
+  ]
+}

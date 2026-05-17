@@ -4,9 +4,12 @@
 
 ## Структура
 
-- `apps/server/` - серверная часть: API, WebSocket, таймеры, БД, журнал событий.
-- `apps/client-display/` - клиент вывода табло на LED-экран через HDMI/VP410.
-- `apps/client-control/` - операторские экраны и программные пульты.
+- `apps/timer-service/` - C++-сервис точного времени: game clock, shot clock, monotonic timing.
+- `apps/mcu-firmware/` - C++-каркас прошивки будущих аппаратных пультов.
+- `apps/server/` - серверная часть: API, WebSocket, бизнес-логика, БД, журнал событий.
+- `apps/client/` - единый frontend: операторская панель, программные пульты и LED-display режимы.
+- `libs/domain/` - общая доменная модель и чистые правила.
+- `libs/contracts/` - контракты REST/WebSocket/Timer Service/MCU.
 - `docs/` - ТЗ и проектная документация.
 - `infrastructure/` - production compose, пример окружения и инфраструктурные инструкции.
 - `tools/` - служебные скрипты репозитория.
@@ -17,6 +20,7 @@
 
 - Node.js `>=24.12.0`
 - npm `>=11.6.2`
+- C++ toolchain for future `apps/timer-service` and `apps/mcu-firmware` implementations. Current low-level targets are infrastructure placeholders.
 
 Установка зависимостей:
 
@@ -50,7 +54,7 @@ npm run nx:reset
 npm run graph
 ```
 
-Текущие цели `build`, `test` и `lint` являются стартовыми placeholder-командами. Они проверяют, что Nx видит структуру монорепозитория; реальные сборки и тесты нужно заменить при выборе стеков для `server`, `client-display` и `client-control`.
+Текущие цели `build`, `test` и `lint` являются стартовыми placeholder-командами. Они проверяют, что Nx видит структуру монорепозитория; реальные сборки и тесты нужно заменить при выборе стеков для приложений и библиотек.
 
 ## Документация
 
@@ -74,8 +78,9 @@ docker compose --env-file .env -f infrastructure/docker-compose.prod.yml up -d -
 
 В каждом приложении есть `Dockerfile` под будущую сборку:
 
+- `apps/timer-service/Dockerfile`
+- `apps/mcu-firmware/Dockerfile`
 - `apps/server/Dockerfile`
-- `apps/client-display/Dockerfile`
-- `apps/client-control/Dockerfile`
+- `apps/client/Dockerfile`
 
 Корневой `docker-compose.yml` используется для локального запуска. Production compose в `infrastructure/docker-compose.prod.yml` использует те же Dockerfile через `build`.

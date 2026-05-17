@@ -1,0 +1,22 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "client",
+  "projectType": "application",
+  "root": "apps/client",
+  "sourceRoot": "apps/client/src",
+  "targets": {
+    "build": {
+      "command": "node tools/nx-placeholder.mjs client build"
+    },
+    "lint": {
+      "command": "node tools/nx-placeholder.mjs client lint"
+    },
+    "test": {
+      "command": "node tools/nx-placeholder.mjs client test"
+    }
+  },
+  "tags": [
+    "scope:client",
+    "type:app"
+  ]
+}

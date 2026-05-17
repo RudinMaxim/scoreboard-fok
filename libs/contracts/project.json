@@ -1,0 +1,22 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "contracts",
+  "projectType": "library",
+  "root": "libs/contracts",
+  "sourceRoot": "libs/contracts/src",
+  "targets": {
+    "build": {
+      "command": "node tools/nx-placeholder.mjs contracts build"
+    },
+    "lint": {
+      "command": "node tools/nx-placeholder.mjs contracts lint"
+    },
+    "test": {
+      "command": "node tools/nx-placeholder.mjs contracts test"
+    }
+  },
+  "tags": [
+    "scope:contracts",
+    "type:library"
+  ]
+}

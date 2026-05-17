@@ -1,6 +1,22 @@
 name: scoreboard-fok-local
 
 services:
+  timer-service:
+    image: scoreboard-fok/timer-service:${APP_VERSION:-local}
+    build:
+      context: .
+      dockerfile: apps/timer-service/Dockerfile
+    environment:
+      TIMER_SERVICE_PORT: ${TIMER_SERVICE_PORT:-3010}
+      GAME_CLOCK_DURATION_MS: ${GAME_CLOCK_DURATION_MS:-600000}
+      SHOT_CLOCK_DURATION_MS: ${SHOT_CLOCK_DURATION_MS:-24000}
+      TZ: ${TZ:-Asia/Yekaterinburg}
+    ports:
+      - "${TIMER_SERVICE_PORT:-3010}:${TIMER_SERVICE_PORT:-3010}"
+    restart: unless-stopped
+    networks:
+      - scoreboard-local
+
   server:
     image: scoreboard-fok/server:${APP_VERSION:-local}
     build:
@@ -9,43 +25,29 @@ services:
     environment:
       NODE_ENV: ${NODE_ENV:-development}
       DATABASE_URL: ${DATABASE_URL:-file:/data/scoreboard.db}
+      TIMER_SERVICE_URL: http://timer-service:${TIMER_SERVICE_PORT:-3010}
       TZ: ${TZ:-Asia/Yekaterinburg}
     ports:
       - "${SERVER_PORT:-3000}:3000"
     volumes:
       - scoreboard-local-data:/data
-    restart: unless-stopped
-    networks:
-      - scoreboard-local
-
-  client-control:
-    image: scoreboard-fok/client-control:${APP_VERSION:-local}
-    build:
-      context: .
-      dockerfile: apps/client-control/Dockerfile
-    environment:
-      NODE_ENV: ${NODE_ENV:-development}
-      SERVER_URL: http://server:3000
-      TZ: ${TZ:-Asia/Yekaterinburg}
-    ports:
-      - "${CLIENT_CONTROL_PORT:-3001}:3000"
     depends_on:
-      - server
+      - timer-service
     restart: unless-stopped
     networks:
       - scoreboard-local
 
-  client-display:
-    image: scoreboard-fok/client-display:${APP_VERSION:-local}
+  client:
+    image: scoreboard-fok/client:${APP_VERSION:-local}
     build:
       context: .
-      dockerfile: apps/client-display/Dockerfile
+      dockerfile: apps/client/Dockerfile
     environment:
       NODE_ENV: ${NODE_ENV:-development}
       SERVER_URL: http://server:3000
       TZ: ${TZ:-Asia/Yekaterinburg}
     ports:
-      - "${CLIENT_DISPLAY_PORT:-3002}:3000"
+      - "${CLIENT_PORT:-3001}:3000"
     depends_on:
       - server
     restart: unless-stopped

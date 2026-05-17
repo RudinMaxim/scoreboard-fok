@@ -8,7 +8,8 @@
     "npm": ">=11.6.2"
   },
   "workspaces": [
-    "apps/*"
+    "apps/*",
+    "libs/*"
   ],
   "scripts": {
     "nx": "node tools/run-nx.mjs",
