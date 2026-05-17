@@ -50,3 +50,4 @@ compose.override.yml
 *.key
 *.crt
 secrets/
+.gocache/

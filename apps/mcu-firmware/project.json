@@ -1,0 +1,23 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "mcu-firmware",
+  "projectType": "application",
+  "root": "apps/mcu-firmware",
+  "sourceRoot": "apps/mcu-firmware/firmware",
+  "targets": {
+    "build": {
+      "command": "node tools/nx-placeholder.mjs mcu-firmware build"
+    },
+    "lint": {
+      "command": "node tools/nx-placeholder.mjs mcu-firmware lint"
+    },
+    "test": {
+      "command": "node tools/nx-placeholder.mjs mcu-firmware test"
+    }
+  },
+  "tags": [
+    "scope:hardware",
+    "type:firmware",
+    "language:cpp"
+  ]
+}

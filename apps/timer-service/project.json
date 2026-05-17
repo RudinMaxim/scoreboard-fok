@@ -1,0 +1,23 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "timer-service",
+  "projectType": "application",
+  "root": "apps/timer-service",
+  "sourceRoot": "apps/timer-service",
+  "targets": {
+    "build": {
+      "command": "node tools/nx-placeholder.mjs timer-service build"
+    },
+    "lint": {
+      "command": "node tools/nx-placeholder.mjs timer-service lint"
+    },
+    "test": {
+      "command": "node tools/nx-placeholder.mjs timer-service test"
+    }
+  },
+  "tags": [
+    "scope:timer",
+    "type:app",
+    "language:cpp"
+  ]
+}
