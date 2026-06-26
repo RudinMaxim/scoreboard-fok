@@ -27,5 +27,10 @@ test('direct-file prototype entry renders shell into root', async () => {
 
   assert.match(root.innerHTML, /prototype-sidebar/);
   assert.match(root.innerHTML, /id="prototype-app"/);
+  assert.match(root.innerHTML, /УРАЛ/);
+  assert.match(root.innerHTML, /СТАРТ/);
+  assert.match(root.innerHTML, /02:18/);
+  assert.match(root.innerHTML, /4 ПЕРИОД/);
+  assert.match(root.innerHTML, /Фолы 5/);
   assert.equal(typeof listeners.hashchange, 'function');
 });

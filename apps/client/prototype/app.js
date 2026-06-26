@@ -39,7 +39,178 @@
     Flows: [['flows-overview', 'Prototype Flows']],
   };
 
+  const matchState = {
+    tournament: 'Кубок ФОК',
+    venue: 'ФОК Центральный зал',
+    plannedStart: '18:30',
+    period: {
+      label: '4 ПЕРИОД',
+      nextLabel: '4 период',
+    },
+    clocks: {
+      game: '02:18',
+      shot: '14',
+      break: '01:42',
+      warmup: '12:35',
+    },
+    teams: {
+      home: {
+        shortName: 'УРАЛ',
+        fullName: 'Урал Екатеринбург',
+        logoLabel: 'УР',
+        score: 78,
+        fouls: 4,
+        timeoutsUsed: 2,
+        timeoutsLimit: 3,
+        possession: true,
+        penalty: false,
+        color: '#1f6feb',
+        periodScores: [18, 22, 19, 19],
+        players: [
+          { number: 4, name: 'Иванов', role: 'старт' },
+          { number: 7, name: 'Петров', role: 'старт' },
+          { number: 11, name: 'Сидоров', role: 'старт' },
+          { number: 15, name: 'Ким', role: 'старт' },
+          { number: 21, name: 'Орлов', role: 'старт' },
+        ],
+      },
+      away: {
+        shortName: 'СТАРТ',
+        fullName: 'Старт Пермь',
+        logoLabel: 'СТ',
+        score: 81,
+        fouls: 5,
+        timeoutsUsed: 1,
+        timeoutsLimit: 3,
+        possession: false,
+        penalty: true,
+        color: '#ef4444',
+        periodScores: [21, 20, 18, 22],
+      },
+    },
+    system: {
+      backend: 'ok',
+      timerService: 'ok',
+      websocket: 'ok',
+    },
+  };
+
+  function timeoutDots(team) {
+    return Array.from({ length: team.timeoutsLimit }, (_, index) =>
+      index < team.timeoutsUsed ? '●' : '○',
+    ).join('');
+  }
+
+  function teamBlock(team) {
+    return `
+      <section class="led-team" style="--team-color:${escapeHtml(team.color)}">
+        <div class="led-logo">${escapeHtml(team.logoLabel)}</div>
+        <div class="led-team-name">${escapeHtml(team.shortName)}</div>
+        <div class="led-score">${team.score}</div>
+        <div class="led-meta">Фолы ${team.fouls} ${team.penalty ? '<span class="warning">PENALTY</span>' : ''}</div>
+        <div class="led-meta">Тайм-ауты ${timeoutDots(team)}</div>
+        ${team.possession ? '<div class="possession">Владение</div>' : ''}
+      </section>
+    `;
+  }
+
+  function renderLedGame(state) {
+    return `
+      <section class="led-frame led-game">
+        ${teamBlock(state.teams.home)}
+        <section class="led-center">
+          <div class="led-period">${escapeHtml(state.period.label)}</div>
+          <div class="led-game-clock">${escapeHtml(state.clocks.game)}</div>
+          <div class="led-shot-clock">${escapeHtml(state.clocks.shot)}</div>
+          <div class="led-system">WS ${escapeHtml(state.system.websocket)} · Timer ${escapeHtml(state.system.timerService)}</div>
+        </section>
+        ${teamBlock(state.teams.away)}
+      </section>
+    `;
+  }
+
+  function renderLedBreak(state) {
+    return `
+      <section class="led-frame led-break">
+        <h1>ПЕРЕРЫВ</h1>
+        <div class="break-score">${state.teams.home.score} - ${state.teams.away.score}</div>
+        <p>До ${escapeHtml(state.period.nextLabel)}: ${escapeHtml(state.clocks.break)}</p>
+        <table>
+          <thead><tr><th></th><th>1Q</th><th>2Q</th><th>3Q</th><th>4Q</th></tr></thead>
+          <tbody>
+            <tr><th>${escapeHtml(state.teams.home.shortName)}</th>${state.teams.home.periodScores.map((score) => `<td>${score}</td>`).join('')}</tr>
+            <tr><th>${escapeHtml(state.teams.away.shortName)}</th>${state.teams.away.periodScores.map((score) => `<td>${score}</td>`).join('')}</tr>
+          </tbody>
+        </table>
+      </section>
+    `;
+  }
+
+  function renderLedWarmup(state) {
+    return `
+      <section class="led-frame led-simple">
+        <h1>РАЗМИНКА</h1>
+        <p>${escapeHtml(state.tournament)}</p>
+        <div class="matchup">${escapeHtml(state.teams.home.shortName)} vs ${escapeHtml(state.teams.away.shortName)}</div>
+        <p>Начало через ${escapeHtml(state.clocks.warmup)}</p>
+        <p>${escapeHtml(state.venue)} · ${escapeHtml(state.plannedStart)}</p>
+      </section>
+    `;
+  }
+
+  function renderLedRoster(state) {
+    const players = state.teams.home.players
+      .map((player) => `<li><strong>#${player.number}</strong> ${escapeHtml(player.name)} <span>${escapeHtml(player.role)}</span></li>`)
+      .join('');
+    return `
+      <section class="led-frame led-roster">
+        <h1>Представление состава</h1>
+        <h2>${escapeHtml(state.teams.home.fullName)}</h2>
+        <ol>${players}</ol>
+      </section>
+    `;
+  }
+
+  function renderLedTest() {
+    return `
+      <section class="led-frame led-test">
+        <div class="safe-area">SAFE AREA 64px</div>
+        <h1>188 - 188</h1>
+        <div class="test-clocks">88:88 · 24.0</div>
+        <div class="color-bars"><span></span><span></span><span></span><span></span><span></span></div>
+        <p>1920x1080 · LED TEST</p>
+      </section>
+    `;
+  }
+
+  function renderLedNoActiveMatch(state) {
+    return `
+      <section class="led-frame led-simple">
+        <h1>Нет активного матча</h1>
+        <p>${escapeHtml(state.venue)}</p>
+        <p>Backend: ${escapeHtml(state.system.backend)}</p>
+      </section>
+    `;
+  }
+
+  function renderLedRoute(route, state) {
+    const routes = {
+      'led-game': renderLedGame,
+      'led-break': renderLedBreak,
+      'led-warmup': renderLedWarmup,
+      'led-roster': renderLedRoster,
+      'led-test': renderLedTest,
+      'led-no-active-match': renderLedNoActiveMatch,
+    };
+    const renderer = routes[route];
+    return renderer ? renderer(state) : '';
+  }
+
   function renderRoute(route) {
+    if (route.startsWith('led-')) {
+      return renderLedRoute(route, matchState);
+    }
+
     return `<section class="prototype-screen"><h1>${escapeHtml(route)}</h1><p>Unknown prototype route. Select a route from the navigation.</p></section>`;
   }
 
