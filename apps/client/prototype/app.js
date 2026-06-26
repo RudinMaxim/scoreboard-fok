@@ -101,13 +101,13 @@
     ).join('');
   }
 
-  function teamBlock(team) {
+  function teamBlock(team, sideClass) {
     return `
-      <section class="led-team" style="--team-color:${escapeHtml(team.color)}">
+      <section class="led-team ${sideClass}">
         <div class="led-logo">${escapeHtml(team.logoLabel)}</div>
         <div class="led-team-name">${escapeHtml(team.shortName)}</div>
-        <div class="led-score">${team.score}</div>
-        <div class="led-meta">Фолы ${team.fouls} ${team.penalty ? '<span class="warning">PENALTY</span>' : ''}</div>
+        <div class="led-score">${escapeHtml(team.score)}</div>
+        <div class="led-meta">Фолы ${escapeHtml(team.fouls)} ${team.penalty ? '<span class="warning">PENALTY</span>' : ''}</div>
         <div class="led-meta">Тайм-ауты ${timeoutDots(team)}</div>
         ${team.possession ? '<div class="possession">Владение</div>' : ''}
       </section>
@@ -117,14 +117,14 @@
   function renderLedGame(state) {
     return `
       <section class="led-frame led-game">
-        ${teamBlock(state.teams.home)}
+        ${teamBlock(state.teams.home, 'home')}
         <section class="led-center">
           <div class="led-period">${escapeHtml(state.period.label)}</div>
           <div class="led-game-clock">${escapeHtml(state.clocks.game)}</div>
           <div class="led-shot-clock">${escapeHtml(state.clocks.shot)}</div>
           <div class="led-system">WS ${escapeHtml(state.system.websocket)} · Timer ${escapeHtml(state.system.timerService)}</div>
         </section>
-        ${teamBlock(state.teams.away)}
+        ${teamBlock(state.teams.away, 'away')}
       </section>
     `;
   }
@@ -133,13 +133,13 @@
     return `
       <section class="led-frame led-break">
         <h1>ПЕРЕРЫВ</h1>
-        <div class="break-score">${state.teams.home.score} - ${state.teams.away.score}</div>
+        <div class="break-score">${escapeHtml(state.teams.home.score)} - ${escapeHtml(state.teams.away.score)}</div>
         <p>До ${escapeHtml(state.period.nextLabel)}: ${escapeHtml(state.clocks.break)}</p>
         <table>
           <thead><tr><th></th><th>1Q</th><th>2Q</th><th>3Q</th><th>4Q</th></tr></thead>
           <tbody>
-            <tr><th>${escapeHtml(state.teams.home.shortName)}</th>${state.teams.home.periodScores.map((score) => `<td>${score}</td>`).join('')}</tr>
-            <tr><th>${escapeHtml(state.teams.away.shortName)}</th>${state.teams.away.periodScores.map((score) => `<td>${score}</td>`).join('')}</tr>
+            <tr><th>${escapeHtml(state.teams.home.shortName)}</th>${state.teams.home.periodScores.map((score) => `<td>${escapeHtml(score)}</td>`).join('')}</tr>
+            <tr><th>${escapeHtml(state.teams.away.shortName)}</th>${state.teams.away.periodScores.map((score) => `<td>${escapeHtml(score)}</td>`).join('')}</tr>
           </tbody>
         </table>
       </section>
@@ -160,7 +160,10 @@
 
   function renderLedRoster(state) {
     const players = state.teams.home.players
-      .map((player) => `<li><strong>#${player.number}</strong> ${escapeHtml(player.name)} <span>${escapeHtml(player.role)}</span></li>`)
+      .map((player) => {
+        const points = player.points === undefined ? '' : ` <span>${escapeHtml(player.points)} очк.</span>`;
+        return `<li><strong>#${escapeHtml(player.number)}</strong> ${escapeHtml(player.name)} <span>${escapeHtml(player.role)}</span>${points}</li>`;
+      })
       .join('');
     return `
       <section class="led-frame led-roster">
@@ -208,7 +211,8 @@
 
   function renderRoute(route) {
     if (route.startsWith('led-')) {
-      return renderLedRoute(route, matchState);
+      const ledHtml = renderLedRoute(route, matchState);
+      if (ledHtml) return ledHtml;
     }
 
     return `<section class="prototype-screen"><h1>${escapeHtml(route)}</h1><p>Unknown prototype route. Select a route from the navigation.</p></section>`;

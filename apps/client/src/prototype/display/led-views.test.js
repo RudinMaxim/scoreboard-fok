@@ -23,3 +23,32 @@ test('LED modes render their required labels', () => {
   assert.match(renderLedRoute('led-test', matchState), /188 - 188/);
   assert.match(renderLedRoute('led-no-active-match', matchState), /Нет активного матча/);
 });
+
+test('LED game and detail views escape numeric-looking values and ignore raw colors', () => {
+  const unsafeState = structuredClone(matchState);
+  unsafeState.teams.home.score = '<img src=x onerror=alert(1)>';
+  unsafeState.teams.home.fouls = '<script>alert(2)</script>';
+  unsafeState.teams.home.periodScores = ['<td onclick=alert(3)>9</td>'];
+  unsafeState.teams.home.players[0].number = '<svg onload=alert(4)>';
+  unsafeState.teams.home.players[0].points = '<b>99</b>';
+  unsafeState.teams.home.color = 'red; background:url(javascript:alert(5))';
+
+  const gameHtml = renderLedRoute('led-game', unsafeState);
+  const breakHtml = renderLedRoute('led-break', unsafeState);
+  const rosterHtml = renderLedRoute('led-roster', unsafeState);
+
+  assert.doesNotMatch(gameHtml, /<img src=x/);
+  assert.doesNotMatch(gameHtml, /<script>/);
+  assert.doesNotMatch(gameHtml, /style="/);
+  assert.doesNotMatch(gameHtml, /javascript:alert/);
+  assert.match(gameHtml, /&lt;img src=x onerror=alert\(1\)&gt;/);
+  assert.match(gameHtml, /Фолы &lt;script&gt;alert\(2\)&lt;\/script&gt;/);
+
+  assert.doesNotMatch(breakHtml, /<td onclick=alert/);
+  assert.match(breakHtml, /&lt;td onclick=alert\(3\)&gt;9&lt;\/td&gt;/);
+
+  assert.doesNotMatch(rosterHtml, /<svg onload/);
+  assert.doesNotMatch(rosterHtml, /<b>99<\/b>/);
+  assert.match(rosterHtml, /#&lt;svg onload=alert\(4\)&gt;/);
+  assert.match(rosterHtml, /&lt;b&gt;99&lt;\/b&gt; очк\./);
+});

@@ -20,6 +20,11 @@ test('renderRoute returns an unknown route state for bad routes', () => {
   assert.match(html, /Unknown prototype route/);
 });
 
+test('renderRoute returns an unknown route state for bad LED routes', () => {
+  const html = renderRoute('led-typo');
+  assert.match(html, /Unknown prototype route/);
+});
+
 test('renderPrototypeShell contains app mount and prototype navigation', () => {
   const html = renderPrototypeShell('led-game');
   assert.match(html, /id="prototype-app"/);

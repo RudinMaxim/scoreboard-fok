@@ -1,13 +1,8 @@
 import { renderLedRoute } from './display/led-views.js';
+import { escapeHtml } from './html.js';
 import { matchState } from './sample-state.js';
 
-export function escapeHtml(value) {
-  return String(value)
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;');
-}
+export { escapeHtml };
 
 export const routeGroups = {
   LED: [
@@ -43,7 +38,8 @@ export const routeGroups = {
 
 export function renderRoute(route) {
   if (route.startsWith('led-')) {
-    return renderLedRoute(route, matchState);
+    const ledHtml = renderLedRoute(route, matchState);
+    if (ledHtml) return ledHtml;
   }
 
   return `<section class="prototype-screen"><h1>${escapeHtml(route)}</h1><p>Unknown prototype route. Select a route from the navigation.</p></section>`;
