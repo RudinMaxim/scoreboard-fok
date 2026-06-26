@@ -2,5 +2,9 @@
   "name": "@scoreboard-fok/client",
   "version": "0.1.0",
   "private": true,
-  "type": "module"
+  "type": "module",
+  "scripts": {
+    "test": "node --test \"src/prototype/**/*.test.js\"",
+    "prototype:check": "node --test \"src/prototype/**/*.test.js\""
+  }
 }

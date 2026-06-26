@@ -1,0 +1,85 @@
+:root {
+  --bg-display: #080b10;
+  --bg-control: #f3f4f6;
+  --surface: #ffffff;
+  --surface-dark: #111827;
+  --text: #111827;
+  --text-inverse: #f8fafc;
+  --muted: #64748b;
+  --border: #cbd5e1;
+  --home: #1f6feb;
+  --away: #ef4444;
+  --warning: #facc15;
+  --danger: #dc2626;
+  --success: #16a34a;
+  --radius: 8px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  color: var(--text);
+  background: var(--bg-control);
+}
+
+#root {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+}
+
+.prototype-sidebar {
+  background: #0f172a;
+  color: var(--text-inverse);
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.prototype-brand {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 24px;
+}
+
+.prototype-brand span {
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.route-group {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 22px;
+}
+
+.route-group h2 {
+  margin: 0 0 4px;
+  color: #cbd5e1;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.route-group a {
+  color: #e5e7eb;
+  text-decoration: none;
+  padding: 8px 10px;
+  border-radius: 6px;
+}
+
+.route-group a[aria-current='page'],
+.route-group a:hover {
+  background: #1e293b;
+}
+
+.prototype-main {
+  padding: 24px;
+  overflow: auto;
+}
+
+.prototype-screen {
+  min-height: calc(100vh - 48px);
+}

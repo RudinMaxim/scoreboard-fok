@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Scoreboard MVP Prototype</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module">
+      import { renderPrototypeShell } from '../src/prototype/render.js';
+
+      const root = document.querySelector('#root');
+
+      function routeFromHash() {
+        return window.location.hash.replace('#', '') || 'led-game';
+      }
+
+      function render() {
+        root.innerHTML = renderPrototypeShell(routeFromHash());
+      }
+
+      window.addEventListener('hashchange', render);
+      render();
+    </script>
+  </body>
+</html>
