@@ -40,6 +40,7 @@ Thumbs.db
 data/
 uploads/
 backups/
+.superpowers/
 
 # Docker overrides
 docker-compose.override.yml
