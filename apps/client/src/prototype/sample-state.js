@@ -1,0 +1,118 @@
+export const displayModes = [
+  'game',
+  'break',
+  'warmup',
+  'roster',
+  'test',
+  'no-active-match',
+];
+
+export const operatorScreens = [
+  'match-dashboard',
+  'match-select',
+  'game-day',
+  'teams-list',
+  'team-detail',
+  'players-list',
+  'player-detail',
+  'matches-list',
+  'match-detail',
+  'scoreboard-layout-settings',
+  'system-status',
+  'recovery',
+  'critical-confirm-modal',
+  'empty-states',
+];
+
+export const remoteScreens = ['timer-remote', 'score-remote'];
+
+export const prototypeFlows = [
+  'prepare-match',
+  'start-match',
+  'score-points',
+  'foul-penalty',
+  'start-stop-clock',
+  'reset-shot-clock-24',
+  'reset-shot-clock-14',
+  'period-break',
+  'failure-recovery',
+  'display-mode-switch',
+  'apply-live-layout-profile',
+];
+
+export const matchState = {
+  tournament: 'Кубок ФОК',
+  venue: 'ФОК Центральный зал',
+  plannedStart: '18:30',
+  period: {
+    label: '4 ПЕРИОД',
+    nextLabel: '4 период',
+  },
+  clocks: {
+    game: '02:18',
+    shot: '14',
+    shotDanger: '4.9',
+    break: '01:42',
+    warmup: '12:35',
+  },
+  teams: {
+    home: {
+      side: 'A',
+      shortName: 'УРАЛ',
+      fullName: 'Урал Екатеринбург',
+      city: 'Екатеринбург',
+      logoLabel: 'УР',
+      score: 78,
+      fouls: 4,
+      timeoutsUsed: 2,
+      timeoutsLimit: 3,
+      possession: true,
+      penalty: false,
+      color: '#1f6feb',
+      periodScores: [18, 22, 19, 19],
+      players: [
+        { number: 4, name: 'Иванов', role: 'старт', points: 18, fouls: 2 },
+        { number: 7, name: 'Петров', role: 'старт', points: 14, fouls: 1 },
+        { number: 11, name: 'Сидоров', role: 'старт', points: 9, fouls: 3 },
+        { number: 15, name: 'Ким', role: 'старт', points: 12, fouls: 1 },
+        { number: 21, name: 'Орлов', role: 'старт', points: 8, fouls: 0 },
+      ],
+    },
+    away: {
+      side: 'B',
+      shortName: 'СТАРТ',
+      fullName: 'Старт Пермь',
+      city: 'Пермь',
+      logoLabel: 'СТ',
+      score: 81,
+      fouls: 5,
+      timeoutsUsed: 1,
+      timeoutsLimit: 3,
+      possession: false,
+      penalty: true,
+      color: '#ef4444',
+      periodScores: [21, 20, 18, 22],
+      players: [
+        { number: 3, name: 'Макаров', role: 'старт', points: 22, fouls: 2 },
+        { number: 8, name: 'Зайцев', role: 'старт', points: 16, fouls: 4 },
+        { number: 10, name: 'Волков', role: 'старт', points: 11, fouls: 1 },
+        { number: 13, name: 'Белых', role: 'старт', points: 7, fouls: 2 },
+        { number: 24, name: 'Смирнов', role: 'старт', points: 19, fouls: 3 },
+      ],
+    },
+  },
+  system: {
+    backend: 'ok',
+    timerService: 'ok',
+    database: 'ok',
+    websocket: 'ok',
+    displayClient: 'connected',
+    vp410: 'manual',
+    physicalShotClock: 'manual',
+  },
+  recentEvents: [
+    '02:18 УРАЛ #4 +2',
+    '02:11 СТАРТ командный фол 5',
+    '01:58 Shot clock reset 14',
+  ],
+};
