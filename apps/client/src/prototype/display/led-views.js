@@ -57,7 +57,11 @@ export function renderLedGame(state) {
       <section class="led-center">
         <div class="led-period">${escapeHtml(state.period.label)}</div>
         <div class="led-game-clock">${escapeHtml(state.clocks.game)}</div>
-        <div class="led-shot-clock">${escapeHtml(state.clocks.shot)}</div>
+        <div class="led-shot-clock">
+          <span class="led-shot-label">АТАКА</span>
+          <strong class="led-shot-value">${escapeHtml(state.clocks.shot)}</strong>
+          <span class="led-shot-unit">СЕК</span>
+        </div>
       </section>
       ${teamBlock(state.teams.away, 'away')}
     </section>

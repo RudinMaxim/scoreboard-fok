@@ -239,13 +239,28 @@ body {
 }
 
 .led-shot-clock {
+  display: grid;
+  min-width: 150px;
+  place-items: center;
   background: var(--danger);
   border-radius: var(--radius);
   max-width: 100%;
-  padding: 4px 28px;
+  padding: 8px 28px 10px;
   overflow-wrap: anywhere;
-  font-size: 82px;
   font-weight: 900;
+}
+
+.led-shot-label {
+  font-size: 16px;
+}
+
+.led-shot-value {
+  font-size: 82px;
+  line-height: 0.95;
+}
+
+.led-shot-unit {
+  font-size: 12px;
 }
 
 .led-simple,
@@ -967,6 +982,18 @@ body.led-focus-mode .led-team-name {
 
 body.led-focus-mode .led-score {
   font-size: 112px;
+}
+
+body.led-focus-mode .led-shot-label {
+  font-size: 20px;
+}
+
+body.led-focus-mode .led-shot-value {
+  font-size: 110px;
+}
+
+body.led-focus-mode .led-shot-unit {
+  font-size: 14px;
 }
 
 body.led-focus-mode .led-player-head {

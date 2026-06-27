@@ -41,6 +41,13 @@ test('LED game does not expose technical service statuses to spectators', () => 
   assert.doesNotMatch(html, /led-system|WS ok|Timer ok/);
 });
 
+test('LED game labels the shot clock as attack time in seconds', () => {
+  const html = renderLedRoute('led-game', matchState);
+  assert.match(html, /led-shot-label">АТАКА/);
+  assert.match(html, /led-shot-value">14/);
+  assert.match(html, /led-shot-unit">СЕК/);
+});
+
 test('LED modes render their required labels', () => {
   assert.match(renderLedRoute('led-break', matchState), /ПЕРЕРЫВ/);
   assert.match(renderLedRoute('led-warmup', matchState), /РАЗМИНКА/);
