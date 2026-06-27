@@ -107,10 +107,12 @@ body {
   border: 3px solid var(--team-accent);
   border-radius: var(--radius);
   display: grid;
-  place-items: center;
+  align-content: start;
+  justify-items: center;
+  gap: 4px;
   text-align: center;
   min-width: 0;
-  padding: 18px;
+  padding: 12px;
 }
 
 .led-team.home {
@@ -122,33 +124,83 @@ body {
 }
 
 .led-logo {
-  width: 82px;
-  height: 82px;
+  width: 58px;
+  height: 58px;
   border-radius: 999px;
   display: grid;
   place-items: center;
   background: var(--team-accent);
-  font-size: 30px;
+  font-size: 22px;
   font-weight: 800;
 }
 
 .led-team-name {
   max-width: 100%;
   overflow-wrap: anywhere;
-  font-size: 32px;
+  font-size: 25px;
   font-weight: 800;
 }
 
 .led-score {
   max-width: 100%;
   overflow-wrap: anywhere;
-  font-size: 112px;
+  font-size: 96px;
   line-height: 1;
   font-weight: 900;
 }
 
 .led-meta {
-  font-size: 24px;
+  font-size: 17px;
+}
+
+.led-player-list {
+  width: 100%;
+  border-top: 1px solid #334155;
+  border-bottom: 1px solid #334155;
+  padding: 4px 0;
+}
+
+.led-player-head,
+.led-player-row {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) 28px 72px;
+  align-items: center;
+  gap: 4px;
+  min-height: 25px;
+  text-align: left;
+}
+
+.led-player-head {
+  color: #94a3b8;
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.led-player-row {
+  border-top: 1px solid #1e293b;
+  font-size: 13px;
+}
+
+.led-player-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.led-player-points,
+.led-player-fouls {
+  text-align: center;
+}
+
+.foul-dot {
+  color: #475569;
+  font-size: 10px;
+  font-style: normal;
+}
+
+.foul-dot.is-active {
+  color: var(--warning);
 }
 
 .warning {
@@ -157,7 +209,7 @@ body {
 
 .possession {
   color: var(--warning);
-  font-size: 28px;
+  font-size: 18px;
 }
 
 .led-center {

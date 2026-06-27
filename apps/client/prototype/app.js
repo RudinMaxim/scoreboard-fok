@@ -68,11 +68,11 @@
         color: '#1f6feb',
         periodScores: [18, 22, 19, 19],
         players: [
-          { number: 4, name: 'Иванов', role: 'старт', points: 18, fouls: 2 },
-          { number: 7, name: 'Петров', role: 'старт', points: 14, fouls: 1 },
-          { number: 11, name: 'Сидоров', role: 'старт', points: 9, fouls: 3 },
-          { number: 15, name: 'Ким', role: 'старт', points: 12, fouls: 1 },
-          { number: 21, name: 'Орлов', role: 'старт', points: 8, fouls: 0 },
+          { number: 4, name: 'Иванов И.И.', role: 'старт', points: 18, fouls: 2 },
+          { number: 7, name: 'Петров П.П.', role: 'старт', points: 14, fouls: 1 },
+          { number: 11, name: 'Сидоров С.С.', role: 'старт', points: 9, fouls: 3 },
+          { number: 15, name: 'Ким А.В.', role: 'старт', points: 12, fouls: 1 },
+          { number: 21, name: 'Орлов Д.М.', role: 'старт', points: 8, fouls: 0 },
         ],
       },
       away: {
@@ -89,9 +89,11 @@
         color: '#ef4444',
         periodScores: [21, 20, 18, 22],
         players: [
-          { number: 3, name: 'Макаров', role: 'старт', points: 22, fouls: 2 },
-          { number: 8, name: 'Зайцев', role: 'старт', points: 16, fouls: 4 },
-          { number: 10, name: 'Волков', role: 'старт', points: 11, fouls: 1 },
+          { number: 3, name: 'Макаров А.А.', role: 'старт', points: 22, fouls: 2 },
+          { number: 8, name: 'Зайцев М.И.', role: 'старт', points: 16, fouls: 4 },
+          { number: 10, name: 'Волков Е.С.', role: 'старт', points: 11, fouls: 1 },
+          { number: 13, name: 'Белых Н.П.', role: 'старт', points: 7, fouls: 2 },
+          { number: 24, name: 'Смирнов Р.О.', role: 'старт', points: 19, fouls: 3 },
         ],
       },
     },
@@ -114,12 +116,33 @@
     ).join('');
   }
 
+  function foulDots(fouls) {
+    const activeFouls = Math.min(5, Math.max(0, Number(fouls) || 0));
+    return Array.from({ length: 5 }, (_, index) => {
+      const stateClass = index < activeFouls ? 'is-active' : 'is-empty';
+      return `<i class="foul-dot ${stateClass}">●</i>`;
+    }).join('');
+  }
+
+  function playerRows(team, sideClass) {
+    const rows = team.players.slice(0, 5).map((player, index) => `
+      <div class="led-player-row" data-player="${sideClass}-${index}">
+        <strong>#${escapeHtml(player.number)}</strong>
+        <span class="led-player-name">${escapeHtml(player.name)}</span>
+        <strong class="led-player-points">${escapeHtml(player.points)}</strong>
+        <span class="led-player-fouls" aria-label="Фолы: ${escapeHtml(player.fouls)}">${foulDots(player.fouls)}</span>
+      </div>
+    `).join('');
+    return `<div class="led-player-list"><div class="led-player-head"><span>№</span><span>Игрок</span><span>О</span><span>Фолы</span></div>${rows}</div>`;
+  }
+
   function teamBlock(team, sideClass) {
     return `
       <section class="led-team ${sideClass}">
         <div class="led-logo">${escapeHtml(team.logoLabel)}</div>
         <div class="led-team-name">${escapeHtml(team.shortName)}</div>
         <div class="led-score">${escapeHtml(team.score)}</div>
+        ${playerRows(team, sideClass)}
         <div class="led-meta">Фолы ${escapeHtml(team.fouls)} ${team.penalty ? '<span class="warning">PENALTY</span>' : ''}</div>
         <div class="led-meta">Тайм-ауты ${timeoutDots(team)}</div>
         ${team.possession ? '<div class="possession">Владение</div>' : ''}

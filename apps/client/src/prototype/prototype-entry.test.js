@@ -57,7 +57,7 @@ test('direct-file prototype entry renders every LED hash route', async () => {
   vm.runInNewContext(appScript, context);
 
   const routeExpectations = [
-    ['#led-game', [/УРАЛ/, /СТАРТ/, /02:18/, /4 ПЕРИОД/, /Фолы 5/]],
+    ['#led-game', [/УРАЛ/, /СТАРТ/, /02:18/, /4 ПЕРИОД/, /Фолы 5/, /Иванов И\.И\./, /Макаров А\.А\./, /led-player-fouls/]],
     ['#led-break', [/ПЕРЕРЫВ/, /78 - 81/, /01:42/]],
     ['#led-warmup', [/РАЗМИНКА/, /УРАЛ vs СТАРТ/, /12:35/]],
     ['#led-roster', [/Представление состава/, /Урал Екатеринбург/, /Иванов/]],
@@ -71,6 +71,9 @@ test('direct-file prototype entry renders every LED hash route', async () => {
     listeners.hashchange();
     for (const pattern of patterns) {
       assert.match(root.innerHTML, pattern, `expected ${hash} to include ${pattern}`);
+    }
+    if (hash === '#led-game') {
+      assert.equal((root.innerHTML.match(/class="led-player-row"/g) || []).length, 10);
     }
   }
 });

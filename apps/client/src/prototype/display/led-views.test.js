@@ -16,6 +16,19 @@ test('LED game screen contains score, clocks, fouls, logos, and period', () => {
   assert.match(html, /Фолы 5/);
 });
 
+test('LED game shows both five-player lineups with points and foul dots', () => {
+  const html = renderLedRoute('led-game', matchState);
+  const firstHomePlayer = html.match(/<div class="led-player-row" data-player="home-0">[\s\S]*?<\/div>/)?.[0] || '';
+
+  assert.equal((html.match(/class="led-player-row"/g) || []).length, 10);
+  assert.match(html, /#4/);
+  assert.match(html, /Иванов И\.И\./);
+  assert.match(html, /18/);
+  assert.match(html, /Макаров А\.А\./);
+  assert.equal((firstHomePlayer.match(/foul-dot is-active/g) || []).length, 2);
+  assert.equal((firstHomePlayer.match(/foul-dot is-empty/g) || []).length, 3);
+});
+
 test('LED modes render their required labels', () => {
   assert.match(renderLedRoute('led-break', matchState), /ПЕРЕРЫВ/);
   assert.match(renderLedRoute('led-warmup', matchState), /РАЗМИНКА/);
