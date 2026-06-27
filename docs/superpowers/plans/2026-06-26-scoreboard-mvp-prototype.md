@@ -184,7 +184,7 @@ export const matchState = {
     home: {
       side: 'A',
       shortName: 'УРАЛ',
-      fullName: 'Урал Екатеринбург',
+      fullName: 'УРАЛ Екатеринбург',
       city: 'Екатеринбург',
       logoLabel: 'УР',
       score: 78,
