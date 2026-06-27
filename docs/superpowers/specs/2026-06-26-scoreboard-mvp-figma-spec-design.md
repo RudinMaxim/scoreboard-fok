@@ -125,6 +125,26 @@ Layout:
 - команды времени и score commands дают понятный feedback;
 - опасные действия требуют confirm modal.
 
+### 4.4 Browser LED Preview
+
+Прототип открывается напрямую через `file:///.../apps/client/prototype/index.html#led-game` без dev server.
+
+Обычный режим:
+
+- над LED-frame расположена компактная служебная панель просмотра;
+- панель содержит название текущего LED-режима и icon button `Развернуть`;
+- служебная панель не является частью изображения, которое выводится на реальный LED.
+
+Fullscreen / focus mode:
+
+- боковая навигация и внешние отступы скрываются;
+- фон браузера становится чёрным;
+- LED-frame занимает максимально доступную область с сохранением `16:9`;
+- строки игроков увеличиваются до `18-20px`, а точки фолов остаются различимыми;
+- счёт, game clock и shot clock сохраняют более высокий визуальный приоритет;
+- выход выполняется через `Esc` или icon button `Свернуть`;
+- если browser Fullscreen API недоступен для `file://`, CSS focus mode всё равно должен заполнить viewport.
+
 ## 5. Figma File Structure
 
 Файл: `Scoreboard MVP Prototype`.
@@ -202,11 +222,11 @@ Safe area:
 
 Компоненты и variants:
 
-- `Display / Team Block`: home / away, possession on/off, penalty on/off;
+- `Display / Team Block`: home / away, normal fouls / fifth team foul;
 - `Display / Score Number`: normal / corrected / stale;
 - `Display / Game Clock`: `mm:ss` / `ss.d` / paused / stale;
 - `Display / Shot Clock`: `24` / `14` / under-10 / under-5 / expired;
-- `Display / Team Fouls`: `0-4` / penalty;
+- `Display / Team Fouls`: neutral `0-4` / yellow `5+`;
 - `Display / Timeout Dots`: none used / partial / all used;
 - `Control / Status Banner`: ok / warning / danger / degraded;
 - `Control / Event Log Row`;
@@ -232,8 +252,7 @@ Safe area:
 - период;
 - командные фолы текущего периода;
 - тайм-ауты;
-- индикатор владения;
-- penalty indicator при `5+` командных фолах;
+- командные фолы без текстового `PENALTY`: при `5+` значение `ФОЛЫ 5` получает яркий жёлтый фон;
 - небольшой system indicator для служебного состояния связи.
 - постоянный список пяти игроков каждой команды внутри соответствующего командного блока;
 - для игрока: номер, имя в формате `Фамилия И.О.`, набранные очки и персональные фолы;
@@ -256,7 +275,8 @@ Safe area:
 - shot clock выделен danger/accent цветом;
 - последние 5 секунд shot clock показываются с десятыми: `4.9`;
 - последняя минута game clock может показываться с десятыми: `59.9`;
-- при `5+` командных фолах команда получает warning marker;
+- при `5+` командных фолах жёлтым выделяется только компактный блок `ФОЛЫ 5`, а не весь блок команды;
+- надпись `PENALTY` и индикатор владения на LED-экране не используются;
 - строки игроков имеют формат `№ | Фамилия И.О. | Очки | ●●○○○`;
 - составы обеих команд видны одновременно и не перекрывают счёт, game clock или shot clock;
 - счёт и таймеры сохраняют более высокий визуальный приоритет, чем статистика игроков;
@@ -706,7 +726,7 @@ States:
 - подготовка матча;
 - старт матча;
 - начисление очков;
-- фол и penalty;
+- фол и достижение лимита командных фолов;
 - старт/стоп времени;
 - reset shot clock `24`;
 - reset shot clock `14`;
@@ -728,7 +748,7 @@ States:
 
 - есть все страницы Figma из раздела 5;
 - каждый MVP-экран представлен отдельным frame;
-- `LED / Game` содержит счёт, game clock, shot clock `24/14`, фолы, логотипы, период, тайм-ауты и владение;
+- `LED / Game` содержит счёт, game clock, shot clock `24/14`, фолы, логотипы, период и тайм-ауты;
 - все LED-режимы покрыты отдельными frames;
 - все операторские MVP-экраны покрыты отдельными frames;
 - пульт хронометриста и пульт счёта покрыты tablet/desktop frames и mobile-check frames;
