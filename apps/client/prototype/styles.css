@@ -701,7 +701,29 @@ button.danger,
 
 @media (max-width: 720px) {
   #root { display: block; }
-  .prototype-sidebar { position: static; }
+  .prototype-sidebar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 12px;
+    overflow-x: auto;
+  }
+  .prototype-brand {
+    min-width: 150px;
+    margin: 0;
+  }
+  .route-group {
+    display: flex;
+    min-width: max-content;
+    align-items: center;
+    gap: 4px;
+    margin: 0;
+  }
+  .route-group h2 { margin: 0 4px 0 0; }
+  .route-group a { white-space: nowrap; }
   .prototype-main { padding: 14px; }
   .remote-screen { min-height: 0; padding: 16px; }
   .remote-clock-panel,

@@ -157,3 +157,12 @@ test('direct-file prototype entry renders the complete flows overview', async ()
   assert.match(root.innerHTML, /apply-live-layout-profile/);
   assert.equal((root.innerHTML.match(/flow-card/g) || []).length, 11);
 });
+
+test('mobile prototype navigation stays compact and horizontally scrollable', async () => {
+  const styles = await readFile(new URL('../../prototype/styles.css', import.meta.url), 'utf8');
+  const mobileStyles = styles.slice(styles.indexOf('@media (max-width: 720px)'));
+
+  assert.match(mobileStyles, /\.prototype-sidebar\s*\{[^}]*display:\s*flex[^}]*overflow-x:\s*auto/s);
+  assert.match(mobileStyles, /\.route-group\s*\{[^}]*display:\s*flex/s);
+  assert.match(mobileStyles, /\.route-group a\s*\{[^}]*white-space:\s*nowrap/s);
+});
