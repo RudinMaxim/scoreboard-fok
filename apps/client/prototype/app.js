@@ -164,7 +164,6 @@
           <div class="led-period">${escapeHtml(state.period.label)}</div>
           <div class="led-game-clock">${escapeHtml(state.clocks.game)}</div>
           <div class="led-shot-clock">${escapeHtml(state.clocks.shot)}</div>
-          <div class="led-system">WS ${escapeHtml(state.system.websocket)} · Timer ${escapeHtml(state.system.timerService)}</div>
         </section>
         ${teamBlock(state.teams.away, 'away')}
       </section>

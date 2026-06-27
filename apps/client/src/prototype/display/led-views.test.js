@@ -36,6 +36,11 @@ test('LED game uses a yellow fifth-foul badge without penalty or possession text
   assert.match(html, /ФОЛЫ <strong>5<\/strong>/);
 });
 
+test('LED game does not expose technical service statuses to spectators', () => {
+  const html = renderLedRoute('led-game', matchState);
+  assert.doesNotMatch(html, /led-system|WS ok|Timer ok/);
+});
+
 test('LED modes render their required labels', () => {
   assert.match(renderLedRoute('led-break', matchState), /ПЕРЕРЫВ/);
   assert.match(renderLedRoute('led-warmup', matchState), /РАЗМИНКА/);
