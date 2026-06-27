@@ -74,3 +74,42 @@ test('direct-file prototype entry renders every LED hash route', async () => {
     }
   }
 });
+
+test('direct-file prototype entry renders every control hash route', async () => {
+  const appScript = await readFile(new URL('../../prototype/app.js', import.meta.url), 'utf8');
+  const root = { innerHTML: '' };
+  const listeners = {};
+  const context = {
+    document: { querySelector() { return root; } },
+    window: {
+      location: { hash: '#control-match-dashboard' },
+      addEventListener(eventName, handler) { listeners[eventName] = handler; },
+    },
+  };
+
+  vm.runInNewContext(appScript, context);
+
+  const routeExpectations = [
+    ['#control-match-dashboard', /Журнал событий/],
+    ['#control-match-select', /Match Select/],
+    ['#control-game-day', /Game Day/],
+    ['#control-teams-list', /Teams List/],
+    ['#control-team-detail', /Team Detail/],
+    ['#control-players-list', /Players List/],
+    ['#control-player-detail', /Player Detail/],
+    ['#control-matches-list', /Matches List/],
+    ['#control-match-detail', /Match Detail/],
+    ['#control-scoreboard-layout-settings', /Apply to live match/],
+    ['#control-system-status', /System Status/],
+    ['#control-recovery', /Восстановить snapshot/],
+    ['#control-critical-confirm-modal', /Подтверждение/],
+    ['#control-empty-states', /Нет active match/],
+    ['#control-typo', /Unknown prototype route/],
+  ];
+
+  for (const [hash, pattern] of routeExpectations) {
+    context.window.location.hash = hash;
+    listeners.hashchange();
+    assert.match(root.innerHTML, pattern, `expected ${hash} to include ${pattern}`);
+  }
+});
