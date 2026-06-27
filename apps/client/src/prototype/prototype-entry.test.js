@@ -113,3 +113,30 @@ test('direct-file prototype entry renders every control hash route', async () =>
     assert.match(root.innerHTML, pattern, `expected ${hash} to include ${pattern}`);
   }
 });
+
+test('direct-file prototype entry renders both remote hash routes', async () => {
+  const appScript = await readFile(new URL('../../prototype/app.js', import.meta.url), 'utf8');
+  const root = { innerHTML: '' };
+  const listeners = {};
+  const context = {
+    document: { querySelector() { return root; } },
+    window: {
+      location: { hash: '#remote-timer' },
+      addEventListener(eventName, handler) { listeners[eventName] = handler; },
+    },
+  };
+
+  vm.runInNewContext(appScript, context);
+
+  const routeExpectations = [
+    ['#remote-timer', [/Пульт хронометриста/, /START \/ STOP/, />24</, />14</]],
+    ['#remote-score', [/Пульт оператора счёта/, /Team A/, /\+3/, /Владение/]],
+    ['#remote-typo', [/Unknown prototype route/]],
+  ];
+
+  for (const [hash, patterns] of routeExpectations) {
+    context.window.location.hash = hash;
+    listeners.hashchange();
+    for (const pattern of patterns) assert.match(root.innerHTML, pattern);
+  }
+});

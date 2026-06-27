@@ -1,6 +1,7 @@
 import { renderControlRoute } from './control/control-views.js';
 import { renderLedRoute } from './display/led-views.js';
 import { escapeHtml } from './html.js';
+import { renderRemoteRoute } from './remotes/remote-views.js';
 import { matchState } from './sample-state.js';
 
 export { escapeHtml };
@@ -46,6 +47,11 @@ export function renderRoute(route) {
   if (route.startsWith('control-')) {
     const controlHtml = renderControlRoute(route, matchState);
     if (controlHtml) return controlHtml;
+  }
+
+  if (route.startsWith('remote-')) {
+    const remoteHtml = renderRemoteRoute(route, matchState);
+    if (remoteHtml) return remoteHtml;
   }
 
   return `<section class="prototype-screen"><h1>${escapeHtml(route)}</h1><p>Unknown prototype route. Select a route from the navigation.</p></section>`;

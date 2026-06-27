@@ -534,3 +534,183 @@ button.danger,
   .dashboard-grid .event-panel { grid-column: auto; }
   .led-frame { padding: 16px; }
 }
+
+.remote-screen {
+  width: min(100%, 1024px);
+  min-height: 720px;
+  margin: 0 auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+}
+
+.remote-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.remote-header h1 {
+  margin: 4px 0 0;
+  font-size: 28px;
+}
+
+.connection-status {
+  border-left: 4px solid var(--success);
+  padding: 7px 10px;
+  background: #f0fdf4;
+  color: #166534;
+  font-weight: 800;
+}
+
+.remote-clock-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(220px, 1fr);
+  gap: 12px;
+}
+
+.remote-clock-panel div {
+  min-width: 0;
+  border-radius: var(--radius);
+  padding: 20px;
+  background: #111827;
+  color: white;
+}
+
+.remote-clock-panel span {
+  display: block;
+  color: #94a3b8;
+  font-weight: 700;
+}
+
+.remote-clock-panel strong {
+  display: block;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  font-family: Consolas, monospace;
+  font-size: 72px;
+  line-height: 1.1;
+}
+
+.remote-clock-panel .shot {
+  color: #f87171;
+}
+
+.period-strip {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 10px 0 14px;
+  color: #475569;
+}
+
+.remote-actions,
+.team-selector,
+.player-list {
+  display: grid;
+  gap: 10px;
+  margin: 12px 0;
+}
+
+.remote-actions {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.remote-actions.primary {
+  grid-template-columns: 1fr;
+}
+
+.shot-controls {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.team-selector {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.player-list {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.remote-button,
+.player-button {
+  min-width: 0;
+  min-height: 68px;
+  margin: 0;
+  overflow-wrap: anywhere;
+  font-size: 18px;
+}
+
+.remote-actions.primary .remote-button {
+  min-height: 92px;
+  font-size: 30px;
+}
+
+.remote-button.success {
+  border-color: var(--success);
+  background: var(--success);
+  color: white;
+}
+
+.remote-button.warning {
+  border-color: #eab308;
+  background: var(--warning);
+}
+
+.remote-button.score-action {
+  border-color: #0f766e;
+  background: #ccfbf1;
+  color: #115e59;
+  font-size: 25px;
+}
+
+.remote-score-snapshot {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  padding: 18px;
+  background: #111827;
+  color: white;
+  text-align: center;
+}
+
+.remote-score-snapshot strong {
+  font-family: Consolas, monospace;
+  font-size: 38px;
+}
+
+.player-button.selected {
+  border: 3px solid var(--home);
+  background: #eff6ff;
+}
+
+.selected-player {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border-left: 5px solid var(--home);
+  padding: 14px 16px;
+  background: #eff6ff;
+}
+
+@media (max-width: 720px) {
+  #root { display: block; }
+  .prototype-sidebar { position: static; }
+  .prototype-main { padding: 14px; }
+  .remote-screen { min-height: 0; padding: 16px; }
+  .remote-clock-panel,
+  .remote-actions,
+  .shot-controls,
+  .player-list { grid-template-columns: 1fr 1fr; }
+  .remote-actions.primary { grid-template-columns: 1fr; }
+  .remote-clock-panel strong { font-size: 48px; }
+  .screen-header,
+  .remote-header,
+  .summary-panel { align-items: flex-start; flex-direction: column; }
+}
