@@ -1,8 +1,9 @@
 import { renderControlRoute } from './control/control-views.js';
 import { renderLedRoute } from './display/led-views.js';
+import { renderFlowsOverview } from './flows/flow-views.js';
 import { escapeHtml } from './html.js';
 import { renderRemoteRoute } from './remotes/remote-views.js';
-import { matchState } from './sample-state.js';
+import { matchState, prototypeFlows } from './sample-state.js';
 
 export { escapeHtml };
 
@@ -52,6 +53,10 @@ export function renderRoute(route) {
   if (route.startsWith('remote-')) {
     const remoteHtml = renderRemoteRoute(route, matchState);
     if (remoteHtml) return remoteHtml;
+  }
+
+  if (route === 'flows-overview') {
+    return renderFlowsOverview(prototypeFlows);
   }
 
   return `<section class="prototype-screen"><h1>${escapeHtml(route)}</h1><p>Unknown prototype route. Select a route from the navigation.</p></section>`;

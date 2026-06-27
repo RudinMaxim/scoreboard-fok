@@ -12,7 +12,7 @@
       "command": "node tools/nx-placeholder.mjs client lint"
     },
     "test": {
-      "command": "node tools/nx-placeholder.mjs client test"
+      "command": "npm --prefix apps/client run prototype:check"
     }
   },
   "tags": [

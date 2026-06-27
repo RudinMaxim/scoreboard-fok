@@ -140,3 +140,20 @@ test('direct-file prototype entry renders both remote hash routes', async () => 
     for (const pattern of patterns) assert.match(root.innerHTML, pattern);
   }
 });
+
+test('direct-file prototype entry renders the complete flows overview', async () => {
+  const appScript = await readFile(new URL('../../prototype/app.js', import.meta.url), 'utf8');
+  const root = { innerHTML: '' };
+  const context = {
+    document: { querySelector() { return root; } },
+    window: { location: { hash: '#flows-overview' }, addEventListener() {} },
+  };
+
+  vm.runInNewContext(appScript, context);
+
+  assert.match(root.innerHTML, /Prototype Flows/);
+  assert.match(root.innerHTML, /prepare-match/);
+  assert.match(root.innerHTML, /failure-recovery/);
+  assert.match(root.innerHTML, /apply-live-layout-profile/);
+  assert.equal((root.innerHTML.match(/flow-card/g) || []).length, 11);
+});
