@@ -48,6 +48,13 @@ test('LED game labels the shot clock as attack time in seconds', () => {
   assert.match(html, /led-shot-unit">СЕК/);
 });
 
+test('LED game labels the main clock as game time in minutes and seconds', () => {
+  const html = renderLedRoute('led-game', matchState);
+  assert.match(html, /led-game-label">ИГРОВОЕ ВРЕМЯ/);
+  assert.match(html, /led-game-value">02:18/);
+  assert.match(html, /led-game-unit">МИН:СЕК/);
+});
+
 test('LED modes render their required labels', () => {
   assert.match(renderLedRoute('led-break', matchState), /ПЕРЕРЫВ/);
   assert.match(renderLedRoute('led-warmup', matchState), /РАЗМИНКА/);
