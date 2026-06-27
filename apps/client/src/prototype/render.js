@@ -39,10 +39,24 @@ export const routeGroups = {
   Flows: [['flows-overview', 'Prototype Flows']],
 };
 
+function renderLedViewer(route, ledHtml, focusMode = false) {
+  const routeLabel = route.replace('led-', 'LED / ').replaceAll('-', ' ');
+  const controlLabel = focusMode ? 'Свернуть LED' : 'Развернуть LED';
+  return `
+    <section class="led-viewer">
+      <header class="led-viewer-toolbar">
+        <strong>${escapeHtml(routeLabel)}</strong>
+        <button class="led-focus-toggle" data-action="toggle-led-focus" aria-label="${controlLabel}" title="${controlLabel}">${focusMode ? '×' : '⛶'}</button>
+      </header>
+      <div class="led-stage">${ledHtml}</div>
+    </section>
+  `;
+}
+
 export function renderRoute(route) {
   if (route.startsWith('led-')) {
     const ledHtml = renderLedRoute(route, matchState);
-    if (ledHtml) return ledHtml;
+    if (ledHtml) return renderLedViewer(route, ledHtml);
   }
 
   if (route.startsWith('control-')) {

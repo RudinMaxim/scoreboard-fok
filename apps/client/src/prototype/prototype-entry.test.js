@@ -31,7 +31,7 @@ test('direct-file prototype entry renders shell into root', async () => {
   assert.match(root.innerHTML, /СТАРТ/);
   assert.match(root.innerHTML, /02:18/);
   assert.match(root.innerHTML, /4 ПЕРИОД/);
-  assert.match(root.innerHTML, /Фолы 5/);
+  assert.match(root.innerHTML, /ФОЛЫ <strong>5<\/strong>/);
   assert.equal(typeof listeners.hashchange, 'function');
 });
 
@@ -57,7 +57,7 @@ test('direct-file prototype entry renders every LED hash route', async () => {
   vm.runInNewContext(appScript, context);
 
   const routeExpectations = [
-    ['#led-game', [/УРАЛ/, /СТАРТ/, /02:18/, /4 ПЕРИОД/, /Фолы 5/, /Иванов И\.И\./, /Макаров А\.А\./, /led-player-fouls/]],
+    ['#led-game', [/УРАЛ/, /СТАРТ/, /02:18/, /4 ПЕРИОД/, /ФОЛЫ <strong>5<\/strong>/, /Иванов И\.И\./, /Макаров А\.А\./, /led-player-fouls/]],
     ['#led-break', [/ПЕРЕРЫВ/, /78 - 81/, /01:42/]],
     ['#led-warmup', [/РАЗМИНКА/, /УРАЛ vs СТАРТ/, /12:35/]],
     ['#led-roster', [/Представление состава/, /Урал Екатеринбург/, /Иванов/]],
@@ -168,4 +168,41 @@ test('mobile prototype navigation stays compact and horizontally scrollable', as
   assert.match(mobileStyles, /\.prototype-sidebar\s*\{[^}]*display:\s*flex[^}]*overflow-x:\s*auto/s);
   assert.match(mobileStyles, /\.route-group\s*\{[^}]*display:\s*flex/s);
   assert.match(mobileStyles, /\.route-group a\s*\{[^}]*white-space:\s*nowrap/s);
+});
+
+test('direct-file LED focus mode toggles by button and Escape', async () => {
+  const appScript = await readFile(new URL('../../prototype/app.js', import.meta.url), 'utf8');
+  const root = { innerHTML: '' };
+  const listeners = {};
+  const bodyClasses = new Set();
+  const context = {
+    document: {
+      body: {
+        classList: {
+          toggle(className, active) {
+            if (active) bodyClasses.add(className);
+            else bodyClasses.delete(className);
+          },
+        },
+      },
+      documentElement: { requestFullscreen() { return Promise.resolve(); } },
+      fullscreenElement: null,
+      querySelector() { return root; },
+    },
+    window: {
+      location: { hash: '#led-game' },
+      addEventListener(eventName, handler) { listeners[eventName] = handler; },
+    },
+  };
+
+  vm.runInNewContext(appScript, context);
+  assert.match(root.innerHTML, /aria-label="Развернуть LED"/);
+
+  listeners.click({ target: { closest() { return {}; } } });
+  assert.equal(bodyClasses.has('led-focus-mode'), true);
+  assert.match(root.innerHTML, /aria-label="Свернуть LED"/);
+
+  listeners.keydown({ key: 'Escape' });
+  assert.equal(bodyClasses.has('led-focus-mode'), false);
+  assert.match(root.innerHTML, /aria-label="Развернуть LED"/);
 });

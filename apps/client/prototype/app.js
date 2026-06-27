@@ -110,6 +110,8 @@
     ],
   };
 
+  let ledFocusMode = false;
+
   function timeoutDots(team) {
     return Array.from({ length: team.timeoutsLimit }, (_, index) =>
       index < team.timeoutsUsed ? '●' : '○',
@@ -136,6 +138,11 @@
     return `<div class="led-player-list"><div class="led-player-head"><span>№</span><span>Игрок</span><span>О</span><span>Фолы</span></div>${rows}</div>`;
   }
 
+  function teamFoulBadge(team) {
+    const isLimit = Number(team.fouls) >= 5;
+    return `<div class="led-team-fouls${isLimit ? ' is-limit' : ''}">ФОЛЫ <strong>${escapeHtml(team.fouls)}</strong></div>`;
+  }
+
   function teamBlock(team, sideClass) {
     return `
       <section class="led-team ${sideClass}">
@@ -143,9 +150,8 @@
         <div class="led-team-name">${escapeHtml(team.shortName)}</div>
         <div class="led-score">${escapeHtml(team.score)}</div>
         ${playerRows(team, sideClass)}
-        <div class="led-meta">Фолы ${escapeHtml(team.fouls)} ${team.penalty ? '<span class="warning">PENALTY</span>' : ''}</div>
+        ${teamFoulBadge(team)}
         <div class="led-meta">Тайм-ауты ${timeoutDots(team)}</div>
-        ${team.possession ? '<div class="possession">Владение</div>' : ''}
       </section>
     `;
   }
@@ -245,6 +251,20 @@
     return renderer ? renderer(state) : '';
   }
 
+  function renderLedViewer(route, ledHtml, focusMode = false) {
+    const routeLabel = route.replace('led-', 'LED / ').replaceAll('-', ' ');
+    const controlLabel = focusMode ? 'Свернуть LED' : 'Развернуть LED';
+    return `
+      <section class="led-viewer">
+        <header class="led-viewer-toolbar">
+          <strong>${escapeHtml(routeLabel)}</strong>
+          <button class="led-focus-toggle" data-action="toggle-led-focus" aria-label="${controlLabel}" title="${controlLabel}">${focusMode ? '×' : '⛶'}</button>
+        </header>
+        <div class="led-stage">${ledHtml}</div>
+      </section>
+    `;
+  }
+
   function controlScreen(title, body) {
     return `<section class="control-screen"><header class="screen-header"><div><span class="eyebrow">Operator console</span><h1>${escapeHtml(title)}</h1></div><span class="prototype-badge">MVP PROTOTYPE</span></header>${body}</section>`;
   }
@@ -326,7 +346,7 @@
   function renderRoute(route) {
     if (route.startsWith('led-')) {
       const ledHtml = renderLedRoute(route, matchState);
-      if (ledHtml) return ledHtml;
+      if (ledHtml) return renderLedViewer(route, ledHtml, ledFocusMode);
     }
 
     if (route.startsWith('control-')) {
@@ -382,6 +402,31 @@
     root.innerHTML = renderPrototypeShell(routeFromHash());
   }
 
+  function setLedFocusMode(active) {
+    ledFocusMode = active;
+    document.body?.classList.toggle('led-focus-mode', active);
+    render();
+  }
+
   window.addEventListener('hashchange', render);
+  window.addEventListener('click', (event) => {
+    if (!event.target.closest?.('[data-action="toggle-led-focus"]')) return;
+
+    const nextMode = !ledFocusMode;
+    setLedFocusMode(nextMode);
+
+    if (nextMode) {
+      const fullscreenRequest = document.documentElement?.requestFullscreen?.();
+      fullscreenRequest?.catch?.(() => {});
+    } else if (document.fullscreenElement) {
+      document.exitFullscreen?.();
+    }
+  });
+  window.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && ledFocusMode) setLedFocusMode(false);
+  });
+  window.addEventListener('fullscreenchange', () => {
+    if (!document.fullscreenElement && ledFocusMode) setLedFocusMode(false);
+  });
   render();
 })();

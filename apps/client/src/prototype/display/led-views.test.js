@@ -12,8 +12,8 @@ test('LED game screen contains score, clocks, fouls, logos, and period', () => {
   assert.match(html, /02:18/);
   assert.match(html, /14/);
   assert.match(html, /4 ПЕРИОД/);
-  assert.match(html, /Фолы 4/);
-  assert.match(html, /Фолы 5/);
+  assert.match(html, /ФОЛЫ <strong>4<\/strong>/);
+  assert.match(html, /ФОЛЫ <strong>5<\/strong>/);
 });
 
 test('LED game shows both five-player lineups with points and foul dots', () => {
@@ -27,6 +27,13 @@ test('LED game shows both five-player lineups with points and foul dots', () => 
   assert.match(html, /Макаров А\.А\./);
   assert.equal((firstHomePlayer.match(/foul-dot is-active/g) || []).length, 2);
   assert.equal((firstHomePlayer.match(/foul-dot is-empty/g) || []).length, 3);
+});
+
+test('LED game uses a yellow fifth-foul badge without penalty or possession text', () => {
+  const html = renderLedRoute('led-game', matchState);
+  assert.doesNotMatch(html, /PENALTY|Владение/);
+  assert.match(html, /led-team-fouls is-limit/);
+  assert.match(html, /ФОЛЫ <strong>5<\/strong>/);
 });
 
 test('LED modes render their required labels', () => {
@@ -55,7 +62,7 @@ test('LED game and detail views escape numeric-looking values and ignore raw col
   assert.doesNotMatch(gameHtml, /style="/);
   assert.doesNotMatch(gameHtml, /javascript:alert/);
   assert.match(gameHtml, /&lt;img src=x onerror=alert\(1\)&gt;/);
-  assert.match(gameHtml, /Фолы &lt;script&gt;alert\(2\)&lt;\/script&gt;/);
+  assert.match(gameHtml, /ФОЛЫ <strong>&lt;script&gt;alert\(2\)&lt;\/script&gt;<\/strong>/);
 
   assert.doesNotMatch(breakHtml, /<td onclick=alert/);
   assert.match(breakHtml, /&lt;td onclick=alert\(3\)&gt;9&lt;\/td&gt;/);

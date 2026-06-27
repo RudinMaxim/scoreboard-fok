@@ -32,6 +32,11 @@ function playerRows(team, sideClass) {
   `;
 }
 
+function teamFoulBadge(team) {
+  const isLimit = Number(team.fouls) >= 5;
+  return `<div class="led-team-fouls${isLimit ? ' is-limit' : ''}">ФОЛЫ <strong>${escapeHtml(team.fouls)}</strong></div>`;
+}
+
 function teamBlock(team, sideClass) {
   return `
     <section class="led-team ${sideClass}">
@@ -39,9 +44,8 @@ function teamBlock(team, sideClass) {
       <div class="led-team-name">${escapeHtml(team.shortName)}</div>
       <div class="led-score">${escapeHtml(team.score)}</div>
       ${playerRows(team, sideClass)}
-      <div class="led-meta">Фолы ${escapeHtml(team.fouls)} ${team.penalty ? '<span class="warning">PENALTY</span>' : ''}</div>
+      ${teamFoulBadge(team)}
       <div class="led-meta">Тайм-ауты ${timeoutDots(team)}</div>
-      ${team.possession ? '<div class="possession">Владение</div>' : ''}
     </section>
   `;
 }
